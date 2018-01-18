@@ -1,8 +1,10 @@
+import plotly.offline as offline
 import numpy as np
 import matplotlib.pyplot as plt
 import math
 from fractions import Fraction as Fract
 import mpl_toolkits.mplot3d
+import plotly.graph_objs as go
 
 
 def fi1(x1, x2, b1, b2, a):
@@ -128,13 +130,13 @@ def b(i, j, a):
 
 
 def g(r, phi):
-    val = r ** 2 * np.sin(phi + (np.pi / 4)) ** 2
+    val = r ** 2 * np.sin(phi + (np.pi / 2)) ** 2
     return val ** (1 / 3)
 
 
 def l_fun(xl, yl, fi_fun, b1, b2, a):
     r, phi = cart_to_polar(xl, yl)
-    return g(r, phi) * fi_fun(xl, yl, b1, b2, a)
+    return g(r, phi) * fi_fun(xl, yl, b1, b2, a) *a
 
 
 def cart_to_polar(xc, yc):
@@ -189,7 +191,7 @@ def solver():
             for elem in elements:
                 (x0, y0) = elem.get_pos()
                 (x1, y1) = elem.get_top_pos()
-                if (x0 <= Fract.from_float(x) <= x1) and (y0 <= Fract.from_float(y) <= y1):
+                if (x0 <= x <= x1) and (y0 <= y <= y1):
                     match_elem = elem
                     break
             if match_elem is None:
@@ -200,6 +202,7 @@ def solver():
             Z[i, j] += A[mapping.get(position[1])] * fis[1](x, y, bx, by, a)  # phi1
             Z[i, j] += A[mapping.get(position[2])] * fis[2](x, y, bx, by, a)  # phi2
             Z[i, j] += A[mapping.get(position[3])] * fis[3](x, y, bx, by, a)  # phi3
+
     fig = plt.figure(figsize=(15, 10))
     ax = fig.gca(projection='3d')
 
